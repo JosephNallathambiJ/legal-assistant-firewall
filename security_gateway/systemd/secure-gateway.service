@@ -1,0 +1,76 @@
+[Unit]
+Description=HNX26EPS01 Enterprise Host Security Gateway
+Documentation=file:///home/j/Downloads/firewall/security_gateway/README.md
+After=network.target nftables.service
+Wants=anti-tamper-watchdog.service
+
+[Service]
+Type=simple
+User=j
+Group=j
+WorkingDirectory=/home/j/Downloads/firewall/security_gateway
+ExecStart=/home/j/Downloads/firewall/.venv/bin/python3 cli.py start
+ExecStop=/home/j/Downloads/firewall/.venv/bin/python3 cli.py stop
+Restart=on-failure
+RestartSec=5s
+
+# ------------------------------------------------------------------------------
+# LINUX SYSTEMD SECURITY HARDENING DIRECTIVES
+# ------------------------------------------------------------------------------
+
+# Prevent child processes from acquiring additional privileges via setuid
+NoNewPrivileges=yes
+
+# Mount an isolated /tmp and /var/tmp for the gateway process
+PrivateTmp=yes
+
+# Mount the entire OS filesystem as strictly read-only
+ProtectSystem=strict
+
+# Protect user home directories (allow access to working directory only)
+ProtectHome=read-only
+
+# Deny access to kernel tunables (/proc/sys, /sys)
+ProtectKernelTunables=yes
+
+# Deny access to hardware clock
+ProtectClock=yes
+
+# Deny access to kernel control groups (/sys/fs/cgroup)
+ProtectControlGroups=yes
+
+# Deny access to raw kernel logs
+ProtectKernelLogs=yes
+
+# Restrict hostname / NIS domain modification
+ProtectHostname=yes
+
+# Lock execution personality (prevent changing execution domain)
+LockPersonality=yes
+
+# Prevent creation of memory mappings that are writable and executable simultaneously
+# Note: Verified compatible with Python 3.12 CPython runtime
+MemoryDenyWriteExecute=yes
+
+# Restrict socket families to IPv4, IPv6, and Unix Domain Sockets only
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+
+# Restrict Linux namespaces creation
+RestrictNamespaces=yes
+
+# Prevent execution of SUID/SGID binaries
+RestrictSUIDSGID=yes
+
+# Restrict kernel system calls to essential subsets
+SystemCallFilter=@system-service @network-io @file-system
+SystemCallErrorNumber=EPERM
+
+# Explicit Read/Write paths for logs and runtime state
+ReadWritePaths=/home/j/Downloads/firewall/security_gateway/logs
+
+# Drop all Linux capabilities (gateway runs strictly as unprivileged user)
+CapabilityBoundingSet=
+AmbientCapabilities=
+
+[Install]
+WantedBy=multi-user.target

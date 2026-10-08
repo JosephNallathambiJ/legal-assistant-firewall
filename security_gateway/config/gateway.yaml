@@ -1,0 +1,72 @@
+# ==============================================================================
+# HNX26EPS01 Security Gateway — Master Configuration
+# Conservative, fail-closed defaults for enterprise host security.
+# ==============================================================================
+
+listener:
+  host: "127.0.0.1"
+  port: 8443
+  # Binding to 0.0.0.0 is strictly prohibited unless explicit override flag provided
+  allow_external_binding: false
+
+upstream:
+  host: "127.0.0.1"
+  port: 3000
+  # Unix Domain Socket support (optional alternative if upstream exposed via socket)
+  unix_socket_path: null
+  timeout_seconds: 15.0
+  max_response_bytes: 10485760 # 10 MB
+
+tls:
+  min_version: "TLSv1.3"
+  max_version: "TLSv1.3"
+  server_cert_path: "security_gateway/certs/server.crt"
+  server_key_path: "security_gateway/certs/server.key"
+  ca_cert_path: "security_gateway/certs/ca.crt"
+  require_client_certificate: true
+  pinned_fingerprints: []
+  pinned_spki_hashes: []
+
+auth:
+  token_secret_path: "security_gateway/config/token_secret.key"
+  token_ttl_seconds: 900
+  enforce_replay_cache: true
+
+rate_limit:
+  requests_per_second: 20.0
+  burst: 40
+  per_client: true
+
+limits:
+  max_connections: 128
+  max_body_bytes: 2097152 # 2 MB
+  max_header_bytes: 8192
+  max_header_count: 64
+  max_uri_length: 2048
+  max_json_depth: 10
+  request_timeout_seconds: 10.0
+  idle_connection_timeout_seconds: 30.0
+
+security:
+  fail_closed: true
+  rbac_config_path: "security_gateway/config/rbac.yaml"
+  hashes_path: "security_gateway/config/hashes.json"
+  log_file: "security_gateway/logs/security.log"
+  integrity_check_interval_seconds: 60
+  watchdog_interval_ms: 500
+
+watchdog:
+  enabled: true
+  lockdown_on_critical: true
+  test_mode: false
+  watchlist_processes:
+    - "gdb"
+    - "strace"
+    - "ltrace"
+    - "radare2"
+    - "frida"
+    - "wireshark"
+    - "tshark"
+    - "tcpdump"
+    - "burpsuite"
+    - "mitmproxy"

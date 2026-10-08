@@ -1,0 +1,182 @@
+# ==============================================================================
+# HNX26EPS01 Security Gateway — Master Zero Trust Policy Matrix
+# Declarative RBAC + ABAC, Device Registry, and Workload Binding Specification
+# ==============================================================================
+
+policy_version: "2.0.0-zt"
+
+defaults:
+  decision: "DENY"
+  require_mtls: true
+  require_token: true
+  max_risk_score: 50
+
+# ------------------------------------------------------------------------------
+# 1. KNOWN CLIENT / DEVICE REGISTRY
+# ------------------------------------------------------------------------------
+clients:
+  client-legal-assistant-001:
+    certificate_sha256: "F76F9568CCAC68124C02F21420E6B0F858B98C536DA1425FB1DDC80CCC97836E"
+    allowed_roles:
+      - "ROLE_LEGAL_QUERY"
+      - "ROLE_LEGAL_REVIEW"
+      - "ROLE_ADMIN"
+    allowed_scopes:
+      - "legal.query"
+      - "legal.search"
+      - "document.read"
+      - "case.review"
+      - "security.status"
+      - "security.audit"
+    enabled: true
+    device_posture: "COMPLIANT"
+    description: "Primary Authorized Legal Counsel & Auditor Workstation"
+
+# ------------------------------------------------------------------------------
+# 2. RBAC + ABAC POLICY RULES
+# ------------------------------------------------------------------------------
+policies:
+  - id: "legal-query"
+    principal_role: "ROLE_LEGAL_QUERY"
+    resource: "/api/v1/legal/query"
+    action: "QUERY"
+    authentication:
+      mtls: true
+      token: true
+      token_binding: true
+      step_up: false
+    security_posture:
+      allowed:
+        - "HEALTHY"
+        - "DEGRADED"
+    max_risk_score: 50
+    required_scopes:
+      - "legal.query"
+    decision: "ALLOW"
+
+  - id: "legal-search"
+    principal_role: "ROLE_LEGAL_QUERY"
+    resource: "/api/v1/legal/search"
+    action: "QUERY"
+    authentication:
+      mtls: true
+      token: true
+      token_binding: true
+    security_posture:
+      allowed:
+        - "HEALTHY"
+        - "DEGRADED"
+    max_risk_score: 50
+    required_scopes:
+      - "legal.search"
+    decision: "ALLOW"
+
+  - id: "document-read"
+    principal_role: "ROLE_LEGAL_QUERY"
+    resource: "/api/v1/documents/*"
+    action: "READ"
+    authentication:
+      mtls: true
+      token: true
+      token_binding: true
+    security_posture:
+      allowed:
+        - "HEALTHY"
+        - "DEGRADED"
+    max_risk_score: 50
+    required_scopes:
+      - "document.read"
+    decision: "ALLOW"
+
+  - id: "case-review-query"
+    principal_role: "ROLE_LEGAL_REVIEW"
+    resource: "/api/v1/legal/query"
+    action: "QUERY"
+    authentication:
+      mtls: true
+      token: true
+      token_binding: true
+    security_posture:
+      allowed:
+        - "HEALTHY"
+        - "DEGRADED"
+    max_risk_score: 50
+    required_scopes:
+      - "legal.query"
+    decision: "ALLOW"
+
+  - id: "case-review"
+    principal_role: "ROLE_LEGAL_REVIEW"
+    resource: "/api/v1/legal/review"
+    action: "REVIEW"
+    authentication:
+      mtls: true
+      token: true
+      token_binding: true
+    security_posture:
+      allowed:
+        - "HEALTHY"
+    max_risk_score: 40
+    required_scopes:
+      - "case.review"
+    decision: "ALLOW"
+
+  - id: "security-status"
+    principal_role: "ROLE_ADMIN"
+    resource: "/security/status"
+    action: "ADMIN"
+    authentication:
+      mtls: true
+      token: true
+      step_up: false
+    security_posture:
+      allowed:
+        - "HEALTHY"
+        - "DEGRADED"
+        - "SUSPICIOUS"
+    max_risk_score: 60
+    required_scopes:
+      - "security.status"
+    decision: "ALLOW"
+
+  - id: "security-audit"
+    principal_role: "ROLE_ADMIN"
+    resource: "/security/audit"
+    action: "ADMIN"
+    authentication:
+      mtls: true
+      token: true
+      step_up: false
+    security_posture:
+      allowed:
+        - "HEALTHY"
+    max_risk_score: 40
+    required_scopes:
+      - "security.audit"
+    decision: "ALLOW"
+
+  - id: "security-admin-elevated"
+    principal_role: "ROLE_ADMIN"
+    resource: "/security/admin/*"
+    action: "ADMIN"
+    authentication:
+      mtls: true
+      token: true
+      step_up: true
+    security_posture:
+      allowed:
+        - "HEALTHY"
+    max_risk_score: 30
+    decision: "ALLOW"
+
+# ------------------------------------------------------------------------------
+# 3. UPSTREAM WORKLOAD IDENTITY
+# ------------------------------------------------------------------------------
+workload:
+  workload_id: "hnx26eps01-legal-agent"
+  expected_host: "127.0.0.1"
+  expected_port: 3000
+  expected_exe_names:
+    - "python"
+    - "python3"
+    - "legal_agent"

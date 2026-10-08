@@ -1,0 +1,101 @@
+#!/usr/sbin/nft -f
+# ==============================================================================
+# HNX26EPS01 Security Gateway — Layer 3 Linux nftables Firewall Policy
+#
+# Enforces:
+# 1. Default Deny Policy: Unsolicited inbound traffic is silently dropped.
+# 2. Strict Loopback Isolation: Port 3000 is NEVER reachable from external NICs.
+# 3. Anti-Reconnaissance: Silent DROP semantics (no TCP RST or ICMP unreachable).
+# 4. Anti-Scan TCP Flag Defenses: NULL, FIN, XMAS, SYN-FIN, SYN-RST dropped.
+# 5. Connection Tracking Hardening: Drop invalid states, drop unsolicited ACKs.
+# 6. Anti-DDoS Metering: Per-source packet and connection rate limits on port 8443.
+# ==============================================================================
+
+# Flush existing table to ensure deterministic state
+table inet security_gateway
+delete table inet security_gateway 2>/dev/null
+
+table inet security_gateway {
+
+    # Dynamic sets and meters for Anti-DDoS rate limiting
+    meter flood_meter {
+        ip saddr limit rate over 20/second burst 40 packets
+    }
+
+    meter conn_meter {
+        ip saddr ct count over 32
+    }
+
+    chain input {
+        type filter hook input priority filter; policy drop;
+
+        # ----------------------------------------------------------------------
+        # 1. CONNTRAINT & LOOPBACK PROTECTION
+        # ----------------------------------------------------------------------
+
+        # Critical Loopback Protection: Upstream port 3000 MUST NOT be reached from non-lo
+        iifname != "lo" tcp dport 3000 counter drop comment "BLOCK: External interface access to upstream port 3000"
+
+        # Permit loopback interface communication
+        iifname "lo" tcp dport 3000 ct state { new, established } counter accept comment "ALLOW: Local loopback to upstream 3000"
+        iifname "lo" counter accept comment "ALLOW: General loopback interface"
+
+        # ----------------------------------------------------------------------
+        # 2. STATE TRACKING & ANTI-SCAN DEFENSES
+        # ----------------------------------------------------------------------
+
+        # Drop invalid connection tracking states
+        ct state invalid counter drop comment "DROP: Invalid conntrack state"
+
+        # Allow established and related connections
+        ct state established,related accept comment "ALLOW: Established and related sessions"
+
+        # Reconnaissance Defense: Malformed TCP Flag Scans
+        # NULL Scan (No flags set)
+        tcp flags == 0x0 / 0x3f counter drop comment "DROP: TCP NULL scan"
+
+        # FIN Scan (Only FIN flag set)
+        tcp flags & (fin | syn | rst | psh | ack | urg) == fin counter drop comment "DROP: TCP FIN scan"
+
+        # XMAS Scan (FIN, PSH, and URG flags set)
+        tcp flags & (fin | syn | rst | psh | ack | urg) == fin | psh | urg counter drop comment "DROP: TCP XMAS scan"
+
+        # SYN-FIN Scan (Conflicting connection initiation and termination)
+        tcp flags & (syn | fin) == syn | fin counter drop comment "DROP: TCP SYN-FIN scan"
+
+        # SYN-RST Scan
+        tcp flags & (syn | rst) == syn | rst counter drop comment "DROP: TCP SYN-RST scan"
+
+        # Unsolicited ACK/RST packets
+        tcp flags & (syn | ack) == ack ct state new counter drop comment "DROP: Unsolicited TCP ACK scan"
+
+        # ----------------------------------------------------------------------
+        # 3. RATE LIMITING & SECURE LISTENER INGRESS
+        # ----------------------------------------------------------------------
+
+        # Enforce per-source packet flood rate limits on the secure listener port
+        tcp dport 8443 meter flood_meter { ip saddr } counter drop comment "DROP: Inbound packet rate exceeded on port 8443"
+
+        # Enforce per-source concurrent connection limits
+        tcp dport 8443 meter conn_meter { ip saddr } counter drop comment "DROP: Concurrent connections exceeded on port 8443"
+
+        # Allow new connections to the TLS 1.3 Gateway Listener (Port 8443)
+        tcp dport 8443 ct state new counter accept comment "ALLOW: Secure TLS 1.3 Gateway Listener"
+
+        # ----------------------------------------------------------------------
+        # 4. DEFAULT SILENT DROP
+        # ----------------------------------------------------------------------
+        # All other unsolicited traffic hits the chain policy (DROP) silently.
+        # No TCP RST or ICMP Port Unreachable packets are emitted to remote probers.
+    }
+
+    chain forward {
+        type filter hook forward priority filter; policy drop;
+        # Gateway host does not act as a transit router
+    }
+
+    chain output {
+        type filter hook output priority filter; policy accept;
+        # Allow local host outbound communication
+    }
+}

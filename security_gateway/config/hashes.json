@@ -1,0 +1,228 @@
+{
+  "assets": {
+    "anti_tamper_watchdog.py": {
+      "classification": "STATIC_IMMUTABLE",
+      "mode": "0o100644",
+      "sha256": "f70fb1dcc3e33dd2b589921b589682ec43c2d584327ff6e5915c1be0d324e42b",
+      "size": 9090
+    },
+    "certs/ca.crt": {
+      "classification": "ROTATABLE_PROTECTED",
+      "mode": "0o100644",
+      "sha256": "e7c45b951c9a34ac2976cd16e50e637908161aea7f83d0ca3a9c2c956fc78ebc",
+      "size": 847
+    },
+    "certs/server.crt": {
+      "classification": "ROTATABLE_PROTECTED",
+      "mode": "0o100644",
+      "sha256": "5aa7b49d9deb5086186230d700a4cebac58338ea9fae4219df808463508f12aa",
+      "size": 940
+    },
+    "cli.py": {
+      "classification": "STATIC_IMMUTABLE",
+      "mode": "0o100644",
+      "sha256": "ec674f2b4fc32a2c24482a713d5456b548de2d9b0ffed8a49ed037cdb5a1c20b",
+      "size": 15672
+    },
+    "config/gateway.yaml": {
+      "classification": "STATIC_IMMUTABLE",
+      "mode": "0o100644",
+      "sha256": "79c1686a436436064bbebf1537fe78e9473a59573df486db3ffc17dbe9dc1468",
+      "size": 1900
+    },
+    "config/rbac.yaml": {
+      "classification": "STATIC_IMMUTABLE",
+      "mode": "0o100644",
+      "sha256": "c9ab0cad26455653b46d318ad788b4072fc8eeb15975da0d23b3152aeb4ddf63",
+      "size": 1509
+    },
+    "config/zero_trust_policy.yaml": {
+      "classification": "STATIC_IMMUTABLE",
+      "mode": "0o100644",
+      "sha256": "a48bd32cdc3ec33b5f3e4f0456387b5463040f34d6629d54025f2bfd9ae546db",
+      "size": 4567
+    },
+    "config_loader.py": {
+      "classification": "STATIC_IMMUTABLE",
+      "mode": "0o100644",
+      "sha256": "31f24b9ccea75c76f9f20400f5b873c38c8f94d2d7b269d427abc9a0ee7c7d0e",
+      "size": 11162
+    },
+    "core/client_registry.py": {
+      "classification": "STATIC_IMMUTABLE",
+      "mode": "0o100644",
+      "sha256": "1ea2d975eb9f61f20b8e8a4b525df51ca500787ebc623e0ccc08dd1d3839d268",
+      "size": 6199
+    },
+    "core/identity.py": {
+      "classification": "STATIC_IMMUTABLE",
+      "mode": "0o100644",
+      "sha256": "3929dbac7decd93291466707fb75f61e151fe6e0b53d80b9b801999904b65449",
+      "size": 2700
+    },
+    "core/policy_enforcement.py": {
+      "classification": "STATIC_IMMUTABLE",
+      "mode": "0o100644",
+      "sha256": "f212cab04541cf718e61629d649eeeed1f91975fd097ee49a927d9a593dd682c",
+      "size": 12428
+    },
+    "core/risk_engine.py": {
+      "classification": "STATIC_IMMUTABLE",
+      "mode": "0o100644",
+      "sha256": "a909c3407d62c5d3057261a5c60680a23d7b1e4fc4121b82b979d3825e9c6738",
+      "size": 4004
+    },
+    "core/security_context.py": {
+      "classification": "STATIC_IMMUTABLE",
+      "mode": "0o100644",
+      "sha256": "96c7510452ab3b416eebe16ac574b5c9f667c8d2fb254e3bf9a468b3f1c98875",
+      "size": 4158
+    },
+    "core/session_manager.py": {
+      "classification": "STATIC_IMMUTABLE",
+      "mode": "0o100644",
+      "sha256": "5ef20ee5a45482215031eee34f1dc627eeeee1673798a157562c6ab62b771178",
+      "size": 5884
+    },
+    "core/workload_identity.py": {
+      "classification": "STATIC_IMMUTABLE",
+      "mode": "0o100644",
+      "sha256": "0f8821dc5cff72270b1aaf8fb5a262c3d99b43d2df4b53888ec783c922fdde40",
+      "size": 3947
+    },
+    "core/zero_trust_policy.py": {
+      "classification": "STATIC_IMMUTABLE",
+      "mode": "0o100644",
+      "sha256": "d6e22a0dead85c1bd5296f1ae8a23d09816cb8781b57efb1af9249c19bad8d1c",
+      "size": 12276
+    },
+    "dpi_engine.py": {
+      "classification": "STATIC_IMMUTABLE",
+      "mode": "0o100644",
+      "sha256": "ff10ae7b7ce952b21f1ef1b1ffee5776f9910622e5cfba08b1fa6e8af66eba27",
+      "size": 14030
+    },
+    "firewall_rules.nft": {
+      "classification": "STATIC_IMMUTABLE",
+      "mode": "0o100644",
+      "sha256": "95756d44616c339af365b92b6f022e2a4a51d98379fca0290951119291b28191",
+      "size": 4719
+    },
+    "gateway_proxy.py": {
+      "classification": "STATIC_IMMUTABLE",
+      "mode": "0o100644",
+      "sha256": "ede036560995d724af9e1ea5bad773c46f610239c0dd0c8477e326a9a90d5bb3",
+      "size": 21534
+    },
+    "incident_response.py": {
+      "classification": "STATIC_IMMUTABLE",
+      "mode": "0o100644",
+      "sha256": "2643be587a1e8dcee691651004c388c69a977771844ff68e58eb42cd9792cdf8",
+      "size": 5732
+    },
+    "integrity_monitor.py": {
+      "classification": "STATIC_IMMUTABLE",
+      "mode": "0o100644",
+      "sha256": "f0652e608fec07bef8fdf7ba2bf8e8e7a5c3ca54dffdb36f0ab72bc47890a283",
+      "size": 8792
+    },
+    "memory_protection.py": {
+      "classification": "STATIC_IMMUTABLE",
+      "mode": "0o100644",
+      "sha256": "e0cb0f1bf84999e5cdf9cced39b0eeb129b76c620f38cc16372103920826ead8",
+      "size": 5389
+    },
+    "nfqueue_filter.py": {
+      "classification": "STATIC_IMMUTABLE",
+      "mode": "0o100644",
+      "sha256": "4fef93781643469a8557b1ab76d8cdd53a5f1b2bba055ea4762b2ea9703935af",
+      "size": 3093
+    },
+    "packet_inspector.py": {
+      "classification": "STATIC_IMMUTABLE",
+      "mode": "0o100644",
+      "sha256": "a20dead90efea8bce58bdf0145b7b57585d892d7c807947f3cfed4a2ba5346a0",
+      "size": 6186
+    },
+    "rbac_engine.py": {
+      "classification": "STATIC_IMMUTABLE",
+      "mode": "0o100644",
+      "sha256": "55acb170560bd905c732b3dd5be1b59981401576fbd9372a9a8a70f15ae18515",
+      "size": 6130
+    },
+    "scripts/create_baseline.sh": {
+      "classification": "STATIC_IMMUTABLE",
+      "mode": "0o100755",
+      "sha256": "6d0f371c78bb36a621309803f2d78c8dc6dec8165d8a5c548fb36c9b52562a07",
+      "size": 2157
+    },
+    "scripts/generate_certificates.sh": {
+      "classification": "STATIC_IMMUTABLE",
+      "mode": "0o100755",
+      "sha256": "a3b23d8326046f8b4ebfa9cd1e1f0bab9ca6318c53b4e5dd78f040bc3c577d69",
+      "size": 4962
+    },
+    "scripts/lockdown.sh": {
+      "classification": "STATIC_IMMUTABLE",
+      "mode": "0o100755",
+      "sha256": "3b0345c7f9a0278df9d629b00871064d8478660faf18ed1daf3560ea3018a7e5",
+      "size": 1257
+    },
+    "scripts/security_self_test.sh": {
+      "classification": "STATIC_IMMUTABLE",
+      "mode": "0o100755",
+      "sha256": "5173e740be989cac76e01abbf23c35b5f2c44c5ddef7acb0f19e1d9260945920",
+      "size": 8025
+    },
+    "scripts/setup_firewall.sh": {
+      "classification": "STATIC_IMMUTABLE",
+      "mode": "0o100755",
+      "sha256": "35287400506bcaa9eee9c29a7425f9ec10bdd9aeeb41047dea4f44c71e56fca9",
+      "size": 2906
+    },
+    "security_logger.py": {
+      "classification": "STATIC_IMMUTABLE",
+      "mode": "0o100644",
+      "sha256": "bdabbf562228d8e080c763d75e1f84e819d29c71cd5d48bd7988e6c1b462fdeb",
+      "size": 5114
+    },
+    "systemd/anti-tamper-watchdog.service": {
+      "classification": "STATIC_IMMUTABLE",
+      "mode": "0o100644",
+      "sha256": "8761bbbbf033b0c3b275cc8bf360c7ec1b621a02c0876905da77af28d64d02c3",
+      "size": 1321
+    },
+    "systemd/secure-gateway.service": {
+      "classification": "STATIC_IMMUTABLE",
+      "mode": "0o100644",
+      "sha256": "02e540d79ec8568604609773b5446c46716d0be9ce6981f1bebfc5609c9176bc",
+      "size": 2289
+    },
+    "tls_manager.py": {
+      "classification": "STATIC_IMMUTABLE",
+      "mode": "0o100644",
+      "sha256": "54d189904aa178e7c7afa55ccf36ff1b998ee3f63f8dd2280844f1a6c4919e4c",
+      "size": 7722
+    },
+    "token_vault.py": {
+      "classification": "STATIC_IMMUTABLE",
+      "mode": "0o100644",
+      "sha256": "b5b155477861586230890893e82d215e8c3402545ea961fd61797968f90960fe",
+      "size": 11345
+    },
+    "upstream_connector.py": {
+      "classification": "STATIC_IMMUTABLE",
+      "mode": "0o100644",
+      "sha256": "0213850f820797030681fef4efc10a6e7b4eedfc94e8f6f23ee00e9ee0d7b494",
+      "size": 8872
+    },
+    "upstream_legal_agent.py": {
+      "classification": "STATIC_IMMUTABLE",
+      "mode": "0o100644",
+      "sha256": "610580a409926d4a21ed574d1360873c9008b08e1fe83714183d5c3eb2422b8f",
+      "size": 8072
+    }
+  },
+  "created_at": "2026-10-08T15:00:00Z",
+  "version": 1
+}

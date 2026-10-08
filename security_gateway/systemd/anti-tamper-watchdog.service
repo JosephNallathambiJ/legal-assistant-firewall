@@ -1,0 +1,44 @@
+[Unit]
+Description=HNX26EPS01 Anti-Tamper & Host Integrity Watchdog
+Documentation=file:///home/j/Downloads/firewall/security_gateway/README.md
+After=network.target
+
+[Service]
+Type=simple
+User=j
+Group=j
+WorkingDirectory=/home/j/Downloads/firewall/security_gateway
+ExecStart=/home/j/Downloads/firewall/.venv/bin/python3 -c "import time; from anti_tamper_watchdog import AntiTamperWatchdog; w = AntiTamperWatchdog(); [(w.run_cycle(), time.sleep(1.0)) for _ in iter(int, 1)]"
+Restart=always
+RestartSec=3s
+
+# ------------------------------------------------------------------------------
+# LINUX SYSTEMD SECURITY HARDENING DIRECTIVES
+# ------------------------------------------------------------------------------
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=read-only
+ProtectKernelTunables=yes
+ProtectClock=yes
+ProtectControlGroups=yes
+ProtectKernelLogs=yes
+ProtectHostname=yes
+LockPersonality=yes
+MemoryDenyWriteExecute=yes
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+RestrictNamespaces=yes
+RestrictSUIDSGID=yes
+
+# Read/Write paths for logs and incident markers
+ReadWritePaths=/home/j/Downloads/firewall/security_gateway/logs
+
+# Needs /proc access to inspect processes
+ProtectProc=default
+ProcSubset=all
+
+CapabilityBoundingSet=CAP_KILL
+AmbientCapabilities=
+
+[Install]
+WantedBy=multi-user.target

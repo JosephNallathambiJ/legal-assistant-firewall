@@ -1,0 +1,60 @@
+# Role-Based Access Control Policy for HNX26EPS01 Security Gateway
+# Enforces Principle of Least Privilege across all endpoints.
+
+roles:
+  ROLE_LEGAL_QUERY:
+    description: "Read-only legal assistant query and research role"
+    permissions:
+      - "legal.query"
+      - "legal.search"
+      - "document.read"
+
+  ROLE_LEGAL_REVIEW:
+    description: "Legal review and contract case analysis role"
+    permissions:
+      - "legal.query"
+      - "legal.search"
+      - "document.read"
+      - "case.review"
+
+  ROLE_ADMIN:
+    description: "Security gateway telemetry, health status, and audit inspection"
+    permissions:
+      - "security.status"
+      - "security.audit"
+
+# Route to Permission Mapping
+routes:
+  - path: "/api/v1/legal/query"
+    method: "POST"
+    required_permission: "legal.query"
+
+  - path: "/api/v1/legal/search"
+    method: "POST"
+    required_permission: "legal.search"
+
+  - path: "/api/v1/legal/review"
+    method: "POST"
+    required_permission: "case.review"
+
+  - path_prefix: "/api/v1/documents/"
+    method: "GET"
+    required_permission: "document.read"
+
+  - path: "/security/status"
+    method: "GET"
+    required_permission: "security.status"
+
+  - path: "/security/audit"
+    method: "GET"
+    required_permission: "security.audit"
+
+# Absolute Hardcoded Denylist: Under NO circumstances are these permitted
+forbidden_operations:
+  - "shell.execute"
+  - "arbitrary.code.execution"
+  - "fs.write"
+  - "raw.socket"
+  - "process.spawn"
+  - "privilege.elevation"
+  - "system.admin"
